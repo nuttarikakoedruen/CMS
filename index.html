@@ -5,6 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CMS – CTW</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- ICONS: loaded from the free Font Awesome 6.5 CDN kit (all.min.css bundles Solid + Regular + Brands).
+     TODO: fontawesome-pro-6.5.1-desktop (Light/Duotone styles + extra glyphs) wasn't accessible from this
+     session, so every icon below was standardized on the Solid weight — Solid is guaranteed present for
+     every glyph used here, whereas Regular only covers a subset of icons in the Free tier and silently
+     renders blank for the rest. Once the Pro kit is available, swap in fa-light for the block-palette /
+     empty-state icons for a lighter look, matching the Pro asset set. -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -398,7 +404,7 @@ body{font-family:'Noto Sans Thai','Inter',sans-serif;font-size:14px;background:#
         <div class="fleft">
           <div class="flbl">Date Picker</div>
           <div class="dw">
-            <div class="di" id="mdb" onclick="toggleDp('mdp')"><i class="fa-regular fa-calendar"></i><span id="mdd">01-01-2024 &nbsp;-&nbsp; 01-01-2025</span></div>
+            <div class="di" id="mdb" onclick="toggleDp('mdp')"><i class="fa-solid fa-calendar"></i><span id="mdd">01-01-2024 &nbsp;-&nbsp; 01-01-2025</span></div>
             <div class="dp-pop" id="mdp">
               <div class="dp-row"><label>จาก</label><input type="date" id="mds" value="2024-01-01"></div>
               <div class="dp-row"><label>ถึง</label><input type="date" id="mde" value="2025-01-01"></div>
@@ -407,7 +413,7 @@ body{font-family:'Noto Sans Thai','Inter',sans-serif;font-size:14px;background:#
           </div>
         </div>
         <div class="fright">
-          <button class="btn btn-ol" onclick="toast('Preview mode ยังไม่พร้อม','inf')"><i class="fa-regular fa-eye"></i> Preview</button>
+          <button class="btn btn-ol" onclick="toast('Preview mode ยังไม่พร้อม','inf')"><i class="fa-solid fa-eye"></i> Preview</button>
           <button class="btn btn-pr" onclick="openCreate(null,'menu')"><i class="fa-solid fa-circle-plus"></i> Create Page</button>
         </div>
       </div>
@@ -446,7 +452,7 @@ body{font-family:'Noto Sans Thai','Inter',sans-serif;font-size:14px;background:#
         <div class="fleft">
           <div class="flbl">Date Picker</div>
           <div class="dw">
-            <div class="di" id="cdb" onclick="toggleDp('cdp')"><i class="fa-regular fa-calendar"></i><span id="cdd">01-01-2024 &nbsp;-&nbsp; 01-01-2025</span></div>
+            <div class="di" id="cdb" onclick="toggleDp('cdp')"><i class="fa-solid fa-calendar"></i><span id="cdd">01-01-2024 &nbsp;-&nbsp; 01-01-2025</span></div>
             <div class="dp-pop" id="cdp">
               <div class="dp-row"><label>จาก</label><input type="date" id="cds" value="2024-01-01"></div>
               <div class="dp-row"><label>ถึง</label><input type="date" id="cde" value="2025-01-01"></div>
@@ -455,7 +461,7 @@ body{font-family:'Noto Sans Thai','Inter',sans-serif;font-size:14px;background:#
           </div>
         </div>
         <div class="fright">
-          <button class="btn btn-ol" onclick="toast('Preview mode ยังไม่พร้อม','inf')"><i class="fa-regular fa-eye"></i> Preview</button>
+          <button class="btn btn-ol" onclick="toast('Preview mode ยังไม่พร้อม','inf')"><i class="fa-solid fa-eye"></i> Preview</button>
         </div>
       </div>
       <div style="flex:1;overflow-y:auto;padding:0 16px 16px;background:#f0f2f7">
@@ -476,15 +482,15 @@ body{font-family:'Noto Sans Thai','Inter',sans-serif;font-size:14px;background:#
         <!-- LEFT -->
         <div class="el">
           <div class="bgrid" id="block-palette">
-            <div class="bi" draggable="true" ondragstart="bdStart(event,'Hero')"><i class="fa-regular fa-rectangle-wide"></i><span>Hero</span></div>
+            <div class="bi" draggable="true" ondragstart="bdStart(event,'Hero')"><i class="fa-solid fa-rectangle-wide"></i><span>Hero</span></div>
             <div class="bi" draggable="true" ondragstart="bdStart(event,'Rich Text')"><i class="fa-solid fa-t"></i><span>Rich Text</span></div>
-            <div class="bi" draggable="true" ondragstart="bdStart(event,'Image')"><i class="fa-regular fa-image"></i><span>Image</span></div>
+            <div class="bi" draggable="true" ondragstart="bdStart(event,'Image')"><i class="fa-solid fa-image"></i><span>Image</span></div>
             <div class="bi" draggable="true" ondragstart="bdStart(event,'Group card')"><i class="fa-solid fa-table-cells-large"></i><span>Group card</span></div>
-            <div class="bi" draggable="true" ondragstart="bdStart(event,'CTA Banner')"><i class="fa-regular fa-circle-dot"></i><span>CTA Banner</span></div>
+            <div class="bi" draggable="true" ondragstart="bdStart(event,'CTA Banner')"><i class="fa-solid fa-circle-dot"></i><span>CTA Banner</span></div>
             <div class="bi" draggable="true" ondragstart="bdStart(event,'Feature')"><i class="fa-solid fa-star"></i><span>Feature</span></div>
-            <div class="bi" draggable="true" ondragstart="bdStart(event,'FAQ')"><i class="fa-regular fa-circle-question"></i><span>FAQ</span></div>
+            <div class="bi" draggable="true" ondragstart="bdStart(event,'FAQ')"><i class="fa-solid fa-circle-question"></i><span>FAQ</span></div>
             <div class="bi" draggable="true" ondragstart="bdStart(event,'Stats')"><i class="fa-solid fa-chart-bar"></i><span>Stats</span></div>
-            <div class="bi" draggable="true" ondragstart="bdStart(event,'Gallery')"><i class="fa-regular fa-images"></i><span>Gallery</span></div>
+            <div class="bi" draggable="true" ondragstart="bdStart(event,'Gallery')"><i class="fa-solid fa-images"></i><span>Gallery</span></div>
             <div class="bi" draggable="true" ondragstart="bdStart(event,'Divider')"><i class="fa-solid fa-minus"></i><span>Divider</span></div>
           </div>
           <div class="layers-sec">
@@ -510,7 +516,7 @@ body{font-family:'Noto Sans Thai','Inter',sans-serif;font-size:14px;background:#
         <div class="er">
           <div class="ep-hd">Edit Content</div>
           <div class="ep-body" id="ep-body">
-            <div class="empty" style="padding:40px 0"><i class="fa-regular fa-hand-pointer"></i><p style="font-size:12px">คลิก Section เพื่อแก้ไข</p></div>
+            <div class="empty" style="padding:40px 0"><i class="fa-solid fa-hand-pointer"></i><p style="font-size:12px">คลิก Section เพื่อแก้ไข</p></div>
           </div>
           <div class="ep-save" id="ep-save" style="display:none">
             <button class="disc-btn" onclick="discardSec()">ยกเลิก</button>
@@ -579,15 +585,15 @@ body{font-family:'Noto Sans Thai','Inter',sans-serif;font-size:14px;background:#
     <div class="mhd"><span>เลือก Block</span><div class="mx" onclick="closeOv('ov-bp')"><i class="fa-solid fa-xmark"></i></div></div>
     <div class="mbody">
       <div class="bp-grid">
-        <div class="bp-item" onclick="addSecModal('Hero')"><i class="fa-regular fa-rectangle-wide"></i><span>Hero</span></div>
+        <div class="bp-item" onclick="addSecModal('Hero')"><i class="fa-solid fa-rectangle-wide"></i><span>Hero</span></div>
         <div class="bp-item" onclick="addSecModal('Rich Text')"><i class="fa-solid fa-t"></i><span>Rich Text</span></div>
-        <div class="bp-item" onclick="addSecModal('Image')"><i class="fa-regular fa-image"></i><span>Image</span></div>
+        <div class="bp-item" onclick="addSecModal('Image')"><i class="fa-solid fa-image"></i><span>Image</span></div>
         <div class="bp-item" onclick="addSecModal('Group card')"><i class="fa-solid fa-table-cells-large"></i><span>Group card</span></div>
-        <div class="bp-item" onclick="addSecModal('CTA Banner')"><i class="fa-regular fa-circle-dot"></i><span>CTA Banner</span></div>
+        <div class="bp-item" onclick="addSecModal('CTA Banner')"><i class="fa-solid fa-circle-dot"></i><span>CTA Banner</span></div>
         <div class="bp-item" onclick="addSecModal('Feature')"><i class="fa-solid fa-star"></i><span>Feature</span></div>
-        <div class="bp-item" onclick="addSecModal('FAQ')"><i class="fa-regular fa-circle-question"></i><span>FAQ</span></div>
+        <div class="bp-item" onclick="addSecModal('FAQ')"><i class="fa-solid fa-circle-question"></i><span>FAQ</span></div>
         <div class="bp-item" onclick="addSecModal('Stats')"><i class="fa-solid fa-chart-bar"></i><span>Stats</span></div>
-        <div class="bp-item" onclick="addSecModal('Gallery')"><i class="fa-regular fa-images"></i><span>Gallery</span></div>
+        <div class="bp-item" onclick="addSecModal('Gallery')"><i class="fa-solid fa-images"></i><span>Gallery</span></div>
         <div class="bp-item" onclick="addSecModal('Divider')"><i class="fa-solid fa-minus"></i><span>Divider</span></div>
       </div>
     </div>
@@ -682,8 +688,8 @@ function buildRow(page,src,accent){
       <div class="ct"><div class="lbs">${lbs}</div></div>
       <div class="cv"><div class="sb" onclick="toggleStat('${src}',${page.id})"><div class="sd ${sc}"></div><span>${page.status}</span></div></div>
       <div class="cd">
-        <div class="dr"><i class="fa-regular fa-calendar"></i>${page.date}</div>
-        <div class="dr"><i class="fa-regular fa-clock"></i>${page.time}</div>
+        <div class="dr"><i class="fa-solid fa-calendar"></i>${page.date}</div>
+        <div class="dr"><i class="fa-solid fa-clock"></i>${page.time}</div>
       </div>
       <div class="ca">
         <div class="ab" onclick="${editFn}" title="แก้ไข"><i class="fa-solid fa-pen"></i></div>
@@ -889,14 +895,14 @@ function renderEdSecs(){
 }
 function buildSecPrev(sec){
   switch(sec.type){
-    case 'Hero':return`<div class="hero-blk"><div class="hero-ph"><i class="fa-regular fa-image"></i><span>${sec.data.imgTitle||'Hero / Banner'}</span></div><div class="hero-dots">${Array(sec.data.itemCount||5).fill(0).map((_,i)=>`<div class="hdot${i===0?' a':''}"></div>`).join('')}</div></div>`;
+    case 'Hero':return`<div class="hero-blk"><div class="hero-ph"><i class="fa-solid fa-image"></i><span>${sec.data.imgTitle||'Hero / Banner'}</span></div><div class="hero-dots">${Array(sec.data.itemCount||5).fill(0).map((_,i)=>`<div class="hdot${i===0?' a':''}"></div>`).join('')}</div></div>`;
     case 'Rich Text':return`<div class="rt-blk"><div class="rt-t">${sec.data.title||'Section Title'}</div><div class="rt-b">${sec.data.desc||'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ut enim.'}</div></div>`;
-    case 'Image':return`<div class="img-blk"><i class="fa-regular fa-image"></i></div>`;
+    case 'Image':return`<div class="img-blk"><i class="fa-solid fa-image"></i></div>`;
     case 'Group card':case 'Feature':return`<div class="cards-blk">${[1,2,3].map(i=>`<div class="card-it"><div class="card-ico"><i class="fa-solid fa-star"></i></div><div class="card-t">Card ${i}</div><div class="card-d">Short description</div></div>`).join('')}</div>`;
     case 'CTA Banner':return`<div class="cta-blk"><div class="cta-h">${sec.data.title||'Ready to get started?'}</div><div class="cta-p">${sec.data.desc||'Join thousands of satisfied customers today.'}</div><div class="cta-btn">Get Started</div></div>`;
     case 'FAQ':return`<div class="faq-blk">${['คำถามที่ 1 คืออะไร?','คำถามที่ 2 คืออะไร?','คำถามที่ 3 คืออะไร?'].map((q,i)=>`<div class="faq-it"><div class="faq-q">${q}<i class="fa-solid fa-chevron-down" style="font-size:10px;color:var(--tl)"></i></div>${i===0?'<div class="faq-a">คำตอบสำหรับคำถามนี้จะแสดงที่นี่</div>':''}</div>`).join('')}</div>`;
     case 'Stats':return`<div class="stats-blk">${[['10K+','Customers'],['50+','Countries'],['99%','Uptime'],['24/7','Support']].map(([n,l])=>`<div><div class="st-n">${n}</div><div class="st-l">${l}</div></div>`).join('')}</div>`;
-    case 'Gallery':return`<div class="gal-blk">${Array(6).fill(0).map(()=>`<div class="g-th"><i class="fa-regular fa-image"></i></div>`).join('')}</div>`;
+    case 'Gallery':return`<div class="gal-blk">${Array(6).fill(0).map(()=>`<div class="g-th"><i class="fa-solid fa-image"></i></div>`).join('')}</div>`;
     case 'Divider':return`<div class="div-blk"><div class="div-line"></div></div>`;
     default:return`<div style="padding:20px;text-align:center;color:var(--tl);font-size:13px">${sec.type}</div>`;
   }
@@ -929,7 +935,7 @@ function renderRightPanel(){
   const save=document.getElementById('ep-save');
   const sec=edSecs.find(s=>s.id===selSecId);
   if(!sec){
-    body.innerHTML='<div class="empty" style="padding:40px 0"><i class="fa-regular fa-hand-pointer"></i><p style="font-size:12px">คลิก Section เพื่อแก้ไข</p></div>';
+    body.innerHTML='<div class="empty" style="padding:40px 0"><i class="fa-solid fa-hand-pointer"></i><p style="font-size:12px">คลิก Section เพื่อแก้ไข</p></div>';
     save.style.display='none';return;
   }
   body.innerHTML=buildEP(sec);save.style.display='flex';
@@ -1027,7 +1033,7 @@ function renderActList(){
   list.innerHTML=acts.length?acts.map(a=>`
     <div style="display:flex;gap:12px;padding:11px 0;border-bottom:1px solid var(--bl);align-items:flex-start">
       <div style="width:9px;height:9px;border-radius:50%;background:var(--pr);flex-shrink:0;margin-top:4px"></div>
-      <div><div style="font-size:13.5px;color:var(--td)">${a.text}</div><div style="font-size:11.5px;color:var(--tp);margin-top:2px"><i class="fa-regular fa-clock" style="margin-right:4px"></i>${a.time}</div></div>
+      <div><div style="font-size:13.5px;color:var(--td)">${a.text}</div><div style="font-size:11.5px;color:var(--tp);margin-top:2px"><i class="fa-solid fa-clock" style="margin-right:4px"></i>${a.time}</div></div>
     </div>`).join('')
     :'<div class="empty"><i class="fa-solid fa-clock-rotate-left"></i><p>ยังไม่มีกิจกรรม</p></div>';
 }
