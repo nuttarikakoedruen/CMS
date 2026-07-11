@@ -23,10 +23,9 @@ body{font-family:'Noto Sans Thai','Inter',sans-serif;font-size:14px;background:#
 .app{display:flex;height:100vh;overflow:hidden;border-radius:12px;box-shadow:0 12px 48px rgba(0,0,0,.28)}
 
 /* SIDEBAR — SIDEBAR-P4-CMS (Figma node 1:12736), Expand/Compress variants
-   TODO(figma:1:12736): Figma's "Compress" variant width wasn't returned as an explicit px value by the
-   design-context tool for this node — 54px is kept from the prior implementation until that's confirmed. */
+   Expand = node 1:12737 (208x832), Compress = node 1:12747 (48x832) — confirmed via get_screenshot. */
 .sidebar{width:208px;min-width:208px;background:var(--sb);display:flex;flex-direction:column;padding-top:8px;overflow-y:auto;overflow-x:hidden;transition:width .25s;flex-shrink:0}
-.sidebar.col{width:54px;min-width:54px}
+.sidebar.col{width:48px;min-width:48px}
 .sidebar.col .lbl,.sidebar.col .sarr,.sidebar.col .logo-name{display:none}
 .sidebar.col .logo{justify-content:center;padding:8px}
 .sidebar.col .logo-ico{width:40px;height:40px}
