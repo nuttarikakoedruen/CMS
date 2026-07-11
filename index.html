@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CMS – CTW</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --sb:#0e2034;--sb-act:#1d3043;
+  --pr:#27397c;--pr-lt:#e9ebf1;
+  --td:#303133;--tm:#495060;--tl:#909399;--tp:#a8abb2;
+  --bd:#dcdfe6;--bl:#e4e7ed;--bt:#e9eaf3;
+  --fl:#f5f7fa;
+  --green:#287c27;--indigo:#674891;
+  --danger:#f56c6c;--dlt:#fef0f0;
+}
+body{font-family:'Noto Sans Thai','Inter',sans-serif;font-size:14px;background:#dde1ea;height:100vh;overflow:hidden}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-thumb{background:#ccc;border-radius:3px}
+.app{display:flex;height:100vh;overflow:hidden;border-radius:12px;box-shadow:0 12px 48px rgba(0,0,0,.28)}
+
+/* SIDEBAR — SIDEBAR-P4-CMS (Figma node 1:12736), Expand/Compress variants
+   TODO(figma:1:12736): Figma's "Compress" variant width wasn't returned as an explicit px value by the
+   design-context tool for this node — 54px is kept from the prior implementation until that's confirmed. */
+.sidebar{width:208px;min-width:208px;background:var(--sb);display:flex;flex-direction:column;padding-top:8px;overflow-y:auto;overflow-x:hidden;transition:width .25s;flex-shrink:0}
+.sidebar.col{width:54px;min-width:54px}
+.sidebar.col .lbl,.sidebar.col .sarr,.sidebar.col .logo-name{display:none}
+.sidebar.col .logo{justify-content:center;padding:8px}
+.sidebar.col .logo-ico{width:40px;height:40px}
+.sidebar.col .nav-item{justify-content:center;padding:12px}
+.logo{display:flex;align-items:center;justify-content:center;gap:8px;padding:8px 24px;cursor:pointer;color:#e5eaf3;margin-bottom:4px}
+/* TODO(figma:1:12739): design shows an exported oval "CTW" logo image (asset d72000e6-…) in place of the
+   gradient monogram tile — swap the <img> src once that asset is exported/hosted permanently (Figma's
+   temporary asset URLs expire in 7 days, so it isn't hot-linked here). */
+.logo-ico{width:46px;height:46px;border-radius:8px;background:linear-gradient(135deg,#2c4a8c,#1a2d5a);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;color:#e5eaf3;flex-shrink:0;border:1px solid rgba(255,255,255,.12)}
+.logo-name{font-family:'Noto Sans Thai','Inter',sans-serif;font-size:14px;font-weight:400;line-height:22px}
+.nav-item{display:flex;align-items:center;gap:16px;height:48px;padding:13px 16px;cursor:pointer;color:rgba(229,234,243,.6);font-family:'Noto Sans Thai','Inter',sans-serif;font-size:14px;font-weight:500;line-height:22px;transition:background .15s,color .15s;user-select:none}
+.nav-item:hover{background:rgba(255,255,255,.05);color:rgba(229,234,243,.9)}
+.nav-item.active{background:var(--sb-act);color:#fff}
+.nav-ico{width:16px;height:16px;text-align:center;flex-shrink:0;font-size:14px;display:flex;align-items:center;justify-content:center}
+.lbl{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sarr{font-size:9px;transition:transform .2s}
+.nav-item.open .sarr{transform:rotate(180deg)}
+.sub-menu{overflow:hidden;max-height:0;transition:max-height .3s}
+.sub-menu.open{max-height:300px}
+.sub-item{display:flex;align-items:center;padding:9px 16px 9px 46px;cursor:pointer;color:rgba(229,234,243,.55);font-size:13.5px;transition:background .15s,color .15s;white-space:nowrap}
+.sub-item:hover{background:rgba(255,255,255,.04);color:#fff}
+.sub-item.active{color:#fff;font-weight:600}
+
+/* MAIN */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;background:#fff;min-width:0}
+
+/* TOPBAR */
+.topbar{height:48px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:0 16px;background:#fff;box-shadow:0 1px 0 var(--bl),0 2px 8px rgba(0,0,0,.06);z-index:20}
+.t-left{display:flex;align-items:center}
+.hamburger{width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:4px;color:#555;font-size:15px}
+.hamburger:hover{background:var(--fl)}
+.t-apps{display:flex;align-items:center;gap:2px}
+.app-btn{padding:4px 13px;border-radius:2px;font-size:13.5px;font-weight:600;cursor:pointer;color:var(--td);transition:all .15s;white-space:nowrap}
+.app-btn.on{background:var(--pr);color:#fff}
+.app-btn:not(.on):hover{background:var(--fl)}
+.tdiv{width:1px;height:28px;background:var(--bl);margin:0 2px}
+.lang-btn,.user-btn{display:flex;align-items:center;gap:5px;padding:4px 9px;cursor:pointer;border-radius:4px;font-size:13px}
+.lang-btn:hover,.user-btn:hover{background:var(--fl)}
+.user-btn{font-weight:600}
+.save-status{font-size:12px;color:var(--tl);margin-left:10px;opacity:0;transition:opacity .2s}
+.save-status.show{opacity:1}
+.avatar{width:26px;height:26px;border-radius:50%;background:var(--pr);color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700}
+
+/* BREADCRUMB */
+.bc-bar{display:flex;align-items:center;gap:3px;padding:4px 16px;background:#fff;border-bottom:1px solid var(--bl);z-index:19;flex-shrink:0}
+.bc-tab{padding:4px 13px;border:.5px solid var(--bd);font-size:13.5px;cursor:pointer;color:var(--tm);font-weight:500;display:flex;align-items:center;gap:6px;transition:all .15s;white-space:nowrap}
+.bc-tab:hover{background:var(--fl)}
+.bc-tab.on{background:var(--pr);color:#fff;border-color:var(--pr)}
+.bc-x{font-size:10px;opacity:.7}
+.bc-x:hover{opacity:1}
+
+/* CARD TABS */
+.ctabs-bar{padding:10px 16px 0;background:#fff;flex-shrink:0}
+.ctabs{display:flex;border-bottom:1px solid var(--bl)}
+.ctab{padding:8px 20px;font-size:14px;cursor:pointer;border:1px solid var(--bl);border-bottom:none;margin-right:-1px;color:var(--td);background:#fff;transition:all .15s;white-space:nowrap}
+.ctab:first-child{border-radius:4px 0 0 0}
+.ctab:last-child{border-radius:0 4px 0 0}
+.ctab.on{background:var(--pr-lt);color:var(--pr);font-weight:600}
+.ctab:not(.on):hover{background:var(--fl)}
+
+/* FILTER */
+.fbar{padding:12px 16px;background:#fff;flex-shrink:0;display:flex;align-items:flex-end;gap:16px;border-bottom:1px solid var(--bl)}
+.fleft{flex:1}
+.flbl{font-size:13px;color:#676676;font-weight:500;margin-bottom:5px}
+.dw{position:relative}
+.di{display:flex;align-items:center;gap:8px;border:1px solid var(--bd);padding:5px 12px;background:#fff;cursor:pointer;width:280px;height:32px;font-size:12px;color:var(--td);border-radius:2px;transition:border-color .15s}
+.di:hover{border-color:var(--pr)}
+.di i{color:var(--tp);font-size:12px}
+.dp-pop{position:absolute;background:#fff;border:1px solid var(--bd);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.12);padding:14px;z-index:50;display:none;top:calc(100% + 4px);left:0}
+.dp-pop.open{display:block}
+.dp-row{display:flex;gap:6px;align-items:center;margin-bottom:8px}
+.dp-row label{font-size:12px;color:var(--tm);width:28px;flex-shrink:0}
+.dp-row input[type=date]{flex:1;padding:5px 8px;border:1px solid var(--bd);border-radius:4px;font-size:12px;font-family:inherit}
+.dp-ok{width:100%;padding:7px;background:var(--pr);color:#fff;border:none;border-radius:4px;cursor:pointer;font-size:13px;font-family:inherit}
+.fright{display:flex;gap:10px;align-items:flex-end}
+.btn{display:flex;align-items:center;gap:7px;padding:7px 18px;border-radius:2px;font-size:13.5px;cursor:pointer;font-weight:500;border:none;transition:all .15s;white-space:nowrap;font-family:inherit}
+.btn-ol{border:1px solid var(--bd);background:#fff;color:var(--td);width:140px;justify-content:center}
+.btn-ol:hover{background:var(--fl)}
+.btn-pr{background:var(--pr);color:#fff;width:140px;justify-content:center}
+.btn-pr:hover{background:#1e2d66}
+
+/* TABLE */
+.tw{flex:1;overflow-y:auto;padding:0 16px 16px;background:#f0f2f7}
+.thead{display:flex;align-items:center;background:var(--fl);border-radius:8px 8px 0 0;padding:8px 16px 8px 56px;margin-top:8px;font-size:13.5px;font-weight:600;color:var(--tl);position:sticky;top:8px;z-index:2}
+.th1{flex:1}.th2{width:130px}.th3{width:130px}.th4{width:138px}.th5{width:104px}
+.tbody{display:flex;flex-direction:column;gap:4px;padding-top:10px}
+.pr{display:flex;align-items:center;background:#fff;border:1px solid var(--bt);border-radius:8px;height:64px;overflow:hidden;transition:box-shadow .15s;position:relative}
+.pr:hover{box-shadow:0 2px 12px rgba(0,0,0,.08)}
+.pr.drag-over{border-color:var(--pr);box-shadow:0 0 0 2px rgba(39,57,124,.18)}
+.pr.dragging{opacity:.55;box-shadow:0 8px 24px rgba(0,0,0,.15);transform:scale(1.01);z-index:50}
+.acc{width:7px;height:64px;background:var(--pr);flex-shrink:0}
+.no-acc .acc{display:none}
+.dh{width:34px;display:flex;align-items:center;justify-content:center;cursor:grab;color:#c0c4cc;font-size:15px;flex-shrink:0}
+.dh:hover{color:var(--tm)}
+.cg{flex:1;display:flex;align-items:center;height:100%;padding:12px 0;min-width:0}
+.cn{flex:1;display:flex;flex-direction:column;gap:5px;min-width:0;padding-right:6px}
+.cnr{display:flex;align-items:center;gap:4px}
+.pt{font-size:14.5px;font-weight:700;color:#353741;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.xb{background:none;border:none;cursor:pointer;padding:0 2px;color:var(--tm);font-size:11px;transition:transform .2s;flex-shrink:0}
+.sr{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.slug{display:inline-flex;align-items:center;border:1px solid var(--bt);border-radius:999px;padding:0 8px;height:18px;font-size:11.5px;color:#7c7e8d;white-space:nowrap}
+.thtag{display:inline-flex;align-items:center;border:1px solid var(--bt);border-radius:999px;padding:0 8px;height:18px;font-size:11.5px;color:#7c7e8d;white-space:nowrap}
+.ct{width:130px;flex-shrink:0}
+.lbs{display:flex;gap:6px}
+.lb{width:27px;height:27px;border-radius:50%;border:2px solid #fff;display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:700;color:#fff;flex-shrink:0;transition:transform .15s}
+.lb:hover{transform:scale(1.1)}
+.lb.done{background:var(--green)}
+.lb.pend{background:#efeff4;color:#b0b3c0}
+.cv{width:130px;flex-shrink:0}
+.sb{display:flex;align-items:center;gap:5px;font-size:13.5px;cursor:pointer;padding:4px 6px;border-radius:6px;transition:background .15s}
+.sb:hover{background:var(--fl)}
+.sd{width:8px;height:8px;border-radius:50%;border:2px solid #fff;flex-shrink:0}
+.sd.pub{background:var(--green)}.sd.dft{background:var(--indigo)}
+.cd{width:138px;flex-shrink:0;display:flex;flex-direction:column;gap:5px}
+.dr{display:flex;align-items:center;gap:5px;font-size:12.5px;color:var(--tp)}
+.dr i{font-size:11px;width:13px}
+.ca{width:104px;flex-shrink:0;display:flex;gap:4px;align-items:center;justify-content:flex-end;padding-right:4px}
+.ab{display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:2px;border:1px solid var(--bd);background:#fff;cursor:pointer;font-size:12px;color:var(--tm);transition:all .15s}
+.ab:hover{background:var(--fl);border-color:#b0b3c0}
+.ab.del{background:var(--dlt);border-color:var(--danger);color:var(--danger)}
+.ab.del:hover{background:#fdd}
+.srw{display:flex;gap:10px;margin-top:4px}
+.scon{width:16px;flex-shrink:0;display:flex;justify-content:center;padding:4px 0}
+.sline{width:2px;background:var(--bl);border-radius:2px}
+.slist{flex:1;display:flex;flex-direction:column;gap:4px}
+
+/* VIEWS */
+.view{display:none;flex-direction:column;flex:1;overflow:hidden}
+.view.on{display:flex}
+
+/* EDITOR */
+.ed-top{display:flex;align-items:center;padding:8px 16px;background:#fff;border-bottom:1px solid var(--bl);flex-shrink:0;gap:0}
+.ed-back{display:flex;align-items:center;gap:7px;cursor:pointer;color:var(--tm);font-size:13.5px;padding:5px 10px;border-radius:4px;transition:background .15s;margin-right:10px}
+.ed-back:hover{background:var(--fl)}
+.ed-ptitle{font-size:14px;font-weight:600;color:var(--td)}
+.th-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 12px;border:1px solid var(--bt);border-radius:2px;font-size:13px;color:var(--tm);margin-left:12px;background:var(--fl)}
+.ed-body{flex:1;display:flex;overflow:hidden}
+
+/* LEFT PANEL */
+.el{width:248px;flex-shrink:0;border-right:1px solid var(--bl);display:flex;flex-direction:column;overflow:hidden;background:#fff}
+.bgrid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--bl);border-bottom:1px solid var(--bl)}
+.bi{background:#fff;display:flex;flex-direction:column;align-items:center;gap:5px;padding:14px 8px;cursor:grab;transition:background .15s;user-select:none}
+.bi:hover{background:var(--pr-lt)}
+.bi:active{cursor:grabbing;background:#dce0f0}
+.bi i{font-size:18px;color:var(--tm)}
+.bi:hover i,.bi:hover span{color:var(--pr)}
+.bi span{font-size:12px;color:var(--tm);text-align:center}
+.layers-sec{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.layers-hd{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--bl);font-size:13px;font-weight:600;color:var(--td);flex-shrink:0}
+.layers-cnt{color:var(--tl);font-weight:400}
+.layers-list{flex:1;overflow-y:auto;padding:6px}
+.li{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:6px;cursor:pointer;border:1px solid transparent;transition:all .15s;margin-bottom:3px}
+.li:hover{background:var(--fl);border-color:var(--bt)}
+.li.sel{background:var(--pr-lt);border-color:var(--pr)}
+.li-dh{color:#c0c4cc;font-size:13px;cursor:grab;flex-shrink:0}
+.li-col{width:18px;height:18px;border-radius:3px;background:var(--pr);flex-shrink:0}
+.li-info{flex:1;min-width:0}
+.li-nm{font-size:13px;font-weight:600;color:var(--td);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.li-tp{font-size:11px;color:var(--tl)}
+.li-del{color:#c0c4cc;font-size:11px;cursor:pointer;padding:2px 4px;border-radius:3px}
+.li-del:hover{color:var(--danger);background:var(--dlt)}
+
+/* CANVAS */
+.ec{flex:1;overflow-y:auto;background:#e8eaf0;display:flex;justify-content:center;padding:24px 20px}
+.ci{width:100%;max-width:860px;display:flex;flex-direction:column;background:#fff;border-radius:4px;box-shadow:0 2px 16px rgba(0,0,0,.1);overflow:hidden}
+.cnav{height:40px;background:#fff;border-bottom:1px solid var(--bl);display:flex;align-items:center;justify-content:space-between;padding:0 18px;flex-shrink:0}
+.cnav-logo{width:34px;height:22px;background:var(--sb);border-radius:3px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:9px;font-weight:700}
+.cnav-links{display:flex;gap:14px;font-size:10.5px;color:var(--tm)}
+.cnav-acts{display:flex;gap:6px}
+.cnav-btn{padding:3px 8px;border-radius:10px;font-size:9.5px;border:1px solid var(--bd);color:var(--tm);cursor:pointer}
+.cs{position:relative;border-bottom:2px dashed var(--bt);transition:border-color .15s}
+.cs:hover{border-color:var(--pr)}
+.cs.sel{border-color:var(--pr);box-shadow:inset 0 0 0 2px rgba(39,57,124,.1)}
+.cs-ov{position:absolute;inset:0;cursor:pointer;z-index:1}
+.cs-lbl{position:absolute;top:4px;left:4px;background:var(--pr);color:#fff;font-size:10px;padding:2px 8px;border-radius:3px;z-index:2;opacity:0;transition:opacity .15s;pointer-events:none}
+.cs:hover .cs-lbl,.cs.sel .cs-lbl{opacity:1}
+.cs-del{position:absolute;top:4px;right:4px;background:var(--dlt);border:1px solid var(--danger);color:var(--danger);font-size:10px;padding:2px 7px;border-radius:3px;z-index:3;opacity:0;cursor:pointer;transition:opacity .15s}
+.cs:hover .cs-del,.cs.sel .cs-del{opacity:1}
+/* section previews */
+.hero-blk{width:100%;background:#f3f4f6;min-height:180px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.hero-ph{display:flex;flex-direction:column;align-items:center;gap:8px;color:#bbb}
+.hero-ph i{font-size:36px}
+.hero-ph span{font-size:12px}
+.hero-dots{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:5px}
+.hdot{width:8px;height:8px;border-radius:50%;background:var(--pr);opacity:.3}
+.hdot.a{opacity:1}
+.rt-blk{padding:28px 36px;background:#fff}
+.rt-t{font-size:15px;font-weight:700;color:var(--td);margin-bottom:8px}
+.rt-b{font-size:12px;color:var(--tl);line-height:1.7}
+.img-blk{width:100%;background:#f8f9fb;min-height:140px;display:flex;align-items:center;justify-content:center;color:#ccc}
+.img-blk i{font-size:32px}
+.cards-blk{padding:24px 28px;background:#fff;display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.card-it{background:var(--fl);border-radius:6px;padding:16px;text-align:center}
+.card-ico{width:34px;height:34px;background:var(--pr-lt);border-radius:50%;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--pr)}
+.card-t{font-size:12px;font-weight:600;color:var(--td)}
+.card-d{font-size:11px;color:var(--tl);margin-top:3px}
+.cta-blk{padding:32px;background:linear-gradient(135deg,var(--pr),#1a2d6a);text-align:center;color:#fff}
+.cta-h{font-size:16px;font-weight:700;margin-bottom:8px}
+.cta-p{font-size:12px;opacity:.8;margin-bottom:14px}
+.cta-btn{display:inline-block;padding:6px 20px;background:#fff;color:var(--pr);border-radius:4px;font-size:12px;font-weight:600}
+.faq-blk{padding:20px 28px;background:#fff}
+.faq-it{border-bottom:1px solid var(--bl);padding:9px 0;cursor:pointer}
+.faq-q{font-size:13px;font-weight:600;color:var(--td);display:flex;justify-content:space-between;align-items:center}
+.faq-a{font-size:12px;color:var(--tl);margin-top:5px;line-height:1.6}
+.stats-blk{padding:24px 28px;background:var(--fl);display:grid;grid-template-columns:repeat(4,1fr);gap:16px;text-align:center}
+.st-n{font-size:20px;font-weight:700;color:var(--pr)}
+.st-l{font-size:11px;color:var(--tl)}
+.gal-blk{padding:16px 24px;background:#fff;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.g-th{background:var(--fl);border-radius:4px;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;color:#ccc;font-size:18px}
+.div-blk{padding:0 24px;background:#fff}
+.div-line{height:1px;background:var(--bl);margin:16px 0}
+.add-sec-row{display:flex;align-items:center;justify-content:center;padding:16px;background:#f0f2f7}
+.add-sec-btn{display:flex;align-items:center;gap:6px;padding:8px 20px;border:1.5px dashed var(--bd);border-radius:6px;cursor:pointer;color:var(--tl);font-size:13px;font-weight:500;transition:all .15s;background:#fff}
+.add-sec-btn:hover{border-color:var(--pr);color:var(--pr);background:var(--pr-lt)}
+
+/* RIGHT PANEL */
+.er{width:282px;flex-shrink:0;border-left:1px solid var(--bl);overflow-y:auto;background:#fff;display:flex;flex-direction:column}
+.ep-hd{padding:16px 18px 12px;border-bottom:1px solid var(--bl);font-size:14px;font-weight:700;color:var(--td);position:sticky;top:0;background:#fff;z-index:2;flex-shrink:0}
+.ep-body{flex:1;padding:16px 18px;overflow-y:auto}
+.eg{margin-bottom:18px}
+.eg-lbl{font-size:12.5px;font-weight:600;color:var(--tm);margin-bottom:6px}
+.eg-sub{font-size:11px;color:var(--tp);margin-bottom:4px}
+.ei{width:100%;padding:7px 11px;border:1px solid var(--bd);border-radius:4px;font-size:13px;color:var(--td);font-family:inherit;outline:none;transition:border-color .15s}
+.ei:focus{border-color:var(--pr);box-shadow:0 0 0 2px rgba(39,57,124,.09)}
+.eta{width:100%;padding:8px 11px;border:1px solid var(--bd);border-radius:4px;font-size:13px;color:var(--td);font-family:inherit;outline:none;resize:vertical;min-height:80px;transition:border-color .15s}
+.eta:focus{border-color:var(--pr);box-shadow:0 0 0 2px rgba(39,57,124,.09)}
+.esel{width:100%;padding:7px 11px;border:1px solid var(--bd);border-radius:4px;font-size:13px;color:var(--td);font-family:inherit;outline:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23909399' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center}
+.esel:focus{border-color:var(--pr)}
+.cc{font-size:11px;color:var(--tp);margin-bottom:4px}
+.up-box{width:100%;height:80px;border:2px dashed var(--bd);border-radius:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer;transition:all .15s;color:var(--tp);font-size:12px}
+.up-box:hover{border-color:var(--pr);color:var(--pr);background:var(--pr-lt)}
+.up-box i{font-size:20px}
+.ep-save{position:sticky;bottom:0;background:#fff;border-top:1px solid var(--bl);padding:12px 18px;display:flex;gap:8px;z-index:2;flex-shrink:0}
+.save-btn{flex:1;padding:8px;background:var(--pr);color:#fff;border:none;border-radius:3px;cursor:pointer;font-size:13.5px;font-weight:600;font-family:inherit}
+.save-btn:hover{background:#1e2d66}
+.disc-btn{flex:1;padding:8px;background:#fff;color:var(--tm);border:1px solid var(--bd);border-radius:3px;cursor:pointer;font-size:13.5px;font-family:inherit}
+.disc-btn:hover{background:var(--fl)}
+
+/* BLOCK PICKER MODAL */
+.bp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:4px 0}
+.bp-item{display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 8px;border:1px solid var(--bl);border-radius:6px;cursor:pointer;transition:all .15s}
+.bp-item:hover{border-color:var(--pr);background:var(--pr-lt)}
+.bp-item i{font-size:20px;color:var(--tm)}
+.bp-item:hover i,.bp-item:hover span{color:var(--pr)}
+.bp-item span{font-size:12px;color:var(--tm);text-align:center}
+
+/* MODALS */
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s}
+.ov.open{opacity:1;pointer-events:all}
+.modal{background:#fff;border-radius:8px;box-shadow:0 20px 60px rgba(0,0,0,.25);width:500px;max-width:96vw;max-height:90vh;overflow-y:auto;transform:translateY(20px) scale(.97);transition:transform .25s}
+.ov.open .modal{transform:none}
+.modal.sm{width:420px}
+.modal.md{width:560px}
+.mhd{display:flex;align-items:center;justify-content:space-between;padding:16px 22px 13px;border-bottom:1px solid var(--bl);font-size:15px;font-weight:700;color:var(--td)}
+.mx{cursor:pointer;padding:4px;border-radius:4px;color:var(--tp);font-size:15px}
+.mx:hover{background:var(--fl);color:var(--td)}
+.mbody{padding:18px 22px}
+.mft{display:flex;justify-content:flex-end;gap:10px;padding:13px 22px;border-top:1px solid var(--bl)}
+.fg{margin-bottom:15px}
+.fg label{display:block;font-size:12.5px;font-weight:600;color:var(--tm);margin-bottom:5px}
+.fg label span{color:var(--danger)}
+.fc{width:100%;padding:7px 11px;border:1px solid var(--bd);border-radius:4px;font-size:13.5px;color:var(--td);font-family:inherit;outline:none;transition:border-color .15s}
+.fc:focus{border-color:var(--pr);box-shadow:0 0 0 2px rgba(39,57,124,.09)}
+.fcs{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23909399' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 11px center}
+.lchks{display:flex;gap:14px}
+.lchk{display:flex;align-items:center;gap:5px;cursor:pointer;font-size:13.5px}
+.lchk input{accent-color:var(--pr);width:14px;height:14px}
+.btn-cancel{border:1px solid var(--bd);background:#fff;color:var(--tm);padding:7px 18px;border-radius:2px;cursor:pointer;font-size:13.5px;font-family:inherit}
+.btn-cancel:hover{background:var(--fl)}
+.btn-save{background:var(--pr);color:#fff;padding:7px 22px;border-radius:2px;cursor:pointer;font-size:13.5px;border:none;font-weight:600;font-family:inherit}
+.btn-save:hover{background:#1e2d66}
+.btn-del{background:var(--danger);color:#fff;padding:7px 18px;border-radius:2px;cursor:pointer;font-size:13.5px;border:none;font-weight:600;font-family:inherit}
+.btn-del:hover{background:#e05555}
+.ci-ico{width:52px;height:52px;border-radius:50%;background:var(--dlt);border:1px solid #fcc;display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--danger);margin:0 auto 14px}
+.ci-t{text-align:center;font-size:15px;font-weight:700;color:var(--td);margin-bottom:8px}
+.ci-d{text-align:center;font-size:13.5px;color:var(--tl)}
+
+/* TOAST */
+.tw{position:fixed;top:16px;right:16px;z-index:200;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.t{background:#fff;border-radius:6px;box-shadow:0 4px 20px rgba(0,0,0,.15);padding:11px 16px;display:flex;align-items:center;gap:10px;font-size:13.5px;min-width:230px;animation:si .3s ease;pointer-events:all}
+.t.ok{border-left:4px solid var(--green)}.t.ok i{color:var(--green)}
+.t.err{border-left:4px solid var(--danger)}.t.err i{color:var(--danger)}
+.t.inf{border-left:4px solid var(--pr)}.t.inf i{color:var(--pr)}
+@keyframes si{from{transform:translateX(60px);opacity:0}to{transform:translateX(0);opacity:1}}
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 0;color:var(--tp);gap:10px;flex:1}
+.empty i{font-size:38px}
+.empty p{font-size:14px}
+</style>
+</head>
+<body>
+<div class="tw" id="tw"></div>
+<div class="app">
+
+<!-- SIDEBAR — SIDEBAR-P4-CMS (Figma https://figma.com/design/zwqQ43bSCcajBYttGkHUBY/CMS?node-id=1-12736)
+     Visual tokens (width, spacing, icon size, typography) below are updated to match the Figma component.
+     TODO(figma:1:12736): the Figma component defines a FLAT 6-item nav — Dashboard, Content Management,
+     Banners, Media Library, Admin & Permissions, Audit log — with no "Site" grouping / sub-menu. That does
+     not line up with this app's current IA (Dashboard, Site > [Menu Managements, Content Management, Poste,
+     Media Library], User), and those sub-items are wired to goView()/setSubAct() and the v-menu/v-content/
+     v-poste/v-media views. Restructuring the nav to match Figma exactly would change those JS hooks and
+     routes, which is outside "style-only" scope — left as-is pending a product decision, flagged here
+     instead of guessing. Icon/label pairs below were left unchanged for the same reason where no
+     unambiguous 1:1 match exists. -->
+<aside class="sidebar" id="sb">
+  <div class="logo" onclick="toggleSb()">
+    <div class="logo-ico">CTW</div>
+    <span class="logo-name">CTW</span>
+  </div>
+  <div class="nav-item" onclick="setNav(this)">
+    <span class="nav-ico"><i class="fa-solid fa-house"></i></span><span class="lbl">Dashboard</span>
+  </div>
+  <!-- TODO(figma:1:12742): Figma shows "Content Management" as a top-level item with a distinct
+       setup/gear-style icon; here it's nested under "Site" (icon fa-globe). Left unchanged — see note above. -->
+  <div class="nav-item active open" id="nav-site" onclick="toggleSub(this,'sub-site')">
+    <span class="nav-ico"><i class="fa-solid fa-globe"></i></span>
+    <span class="lbl">Site</span>
+    <span class="sarr"><i class="fa-solid fa-chevron-down"></i></span>
+  </div>
+  <div class="sub-menu open" id="sub-site">
+    <div class="sub-item" id="si-menu" onclick="goView('menu');setSubAct(this)">Menu Managements</div>
+    <div class="sub-item active" id="si-content" onclick="goView('content');setSubAct(this)">Content Management</div>
+    <div class="sub-item" id="si-poste" onclick="goView('poste');setSubAct(this)">Poste</div>
+    <div class="sub-item" id="si-media" onclick="goView('media');setSubAct(this)">Media Library</div>
+  </div>
+  <!-- TODO(figma:1:12745): Figma labels the closest matching item "Admin & Permissions" (user icon) —
+       label text left as "User" since renaming is a content change, not a style change. -->
+  <div class="nav-item" onclick="setNav(this)">
+    <span class="nav-ico"><i class="fa-solid fa-user"></i></span><span class="lbl">User</span>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <!-- TOPBAR always visible -->
+  <div class="topbar">
+    <div class="t-left">
+      <div class="hamburger" onclick="toggleSb()"><i class="fa-solid fa-bars"></i></div>
+      <span id="save-status" class="save-status"></span>
+    </div>
+    <div class="t-apps">
+      <div class="app-btn on">CMS</div><div class="tdiv"></div>
+      <div class="app-btn">Cwork</div><div class="tdiv"></div>
+      <div class="app-btn">WH</div><div class="tdiv"></div>
+      <div class="app-btn">Report Center</div><div class="tdiv"></div>
+      <div class="app-btn">SYS</div><div class="tdiv"></div>
+      <div class="lang-btn">🇺🇸 English <i class="fa-solid fa-chevron-down" style="font-size:8px"></i></div>
+      <div class="tdiv"></div>
+      <div class="user-btn"><div class="avatar">Ink</div> Ink <i class="fa-solid fa-chevron-down" style="font-size:8px"></i></div>
+    </div>
+  </div>
+
+  <!-- ── VIEW: MENU MANAGEMENTS ── -->
+  <div class="view" id="v-menu">
+    <div class="bc-bar">
+      <div class="bc-tab" onclick="setBc(this)">Site</div>
+      <div class="bc-tab on" id="bc-menu">Menu Managements
+        <span class="bc-x" onclick="closeBc(event,'bc-menu')"><i class="fa-solid fa-xmark"></i></span>
+      </div>
+    </div>
+    <div class="ctabs-bar">
+      <div class="ctabs" id="ctm">
+        <div class="ctab on" onclick="swTab(this,'tm-pages','ctm')">Pages</div>
+        <div class="ctab" onclick="swTab(this,'tm-main','ctm')">Main Menu</div>
+        <div class="ctab" onclick="swTab(this,'tm-footer','ctm')">Footer</div>
+        <div class="ctab" onclick="swTab(this,'tm-act','ctm')">Activity log</div>
+      </div>
+    </div>
+    <div class="view on" id="tm-pages">
+      <div class="fbar">
+        <div class="fleft">
+          <div class="flbl">Date Picker</div>
+          <div class="dw">
+            <div class="di" id="mdb" onclick="toggleDp('mdp')"><i class="fa-regular fa-calendar"></i><span id="mdd">01-01-2024 &nbsp;-&nbsp; 01-01-2025</span></div>
+            <div class="dp-pop" id="mdp">
+              <div class="dp-row"><label>จาก</label><input type="date" id="mds" value="2024-01-01"></div>
+              <div class="dp-row"><label>ถึง</label><input type="date" id="mde" value="2025-01-01"></div>
+              <button class="dp-ok" onclick="applyDp('mdp','mds','mde','mdd')">ยืนยัน</button>
+            </div>
+          </div>
+        </div>
+        <div class="fright">
+          <button class="btn btn-ol" onclick="toast('Preview mode ยังไม่พร้อม','inf')"><i class="fa-regular fa-eye"></i> Preview</button>
+          <button class="btn btn-pr" onclick="openCreate(null,'menu')"><i class="fa-solid fa-circle-plus"></i> Create Page</button>
+        </div>
+      </div>
+      <div class="tw2" id="mwrap" style="flex:1;overflow-y:auto;padding:0 16px 16px;background:#f0f2f7">
+        <div class="thead"><div class="th1">Page / Section</div><div class="th2">Translations</div><div class="th3">Visibility</div><div class="th4">Date update</div><div class="th5">Actions</div></div>
+        <div class="tbody" id="m-body"></div>
+      </div>
+    </div>
+    <div class="view" id="tm-main"><div class="empty"><i class="fa-solid fa-bars"></i><p>Main Menu — ยังไม่มีข้อมูล</p></div></div>
+    <div class="view" id="tm-footer"><div class="empty"><i class="fa-solid fa-shoe-prints"></i><p>Footer — ยังไม่มีข้อมูล</p></div></div>
+    <div class="view" id="tm-act" style="overflow-y:auto;padding:16px"><div id="m-act-list"></div></div>
+  </div>
+
+  <!-- ── VIEW: CONTENT MANAGEMENT ── -->
+  <div class="view on" id="v-content">
+    <div class="bc-bar" id="content-bc">
+      <div class="bc-tab" onclick="setBc(this)">Site</div>
+      <div class="bc-tab on" id="bc-content">Content Management
+        <span class="bc-x" onclick="closeBc(event,'bc-content')"><i class="fa-solid fa-xmark"></i></span>
+      </div>
+      <div class="bc-tab" id="bc-editor" style="display:none">
+        <span id="bc-ed-lbl">Home page</span>
+        <span class="bc-x" onclick="closeEditor(event)"><i class="fa-solid fa-xmark"></i></span>
+      </div>
+    </div>
+    <div class="ctabs-bar" id="content-ctabs-bar">
+      <div class="ctabs" id="ctc">
+        <div class="ctab on" onclick="swTab(this,'tc-pages','ctc')">Pages</div>
+        <div class="ctab" onclick="swTab(this,'tc-banner','ctc')">Banner Management</div>
+      </div>
+    </div>
+
+    <!-- Pages list -->
+    <div class="view on" id="tc-pages">
+      <div class="fbar">
+        <div class="fleft">
+          <div class="flbl">Date Picker</div>
+          <div class="dw">
+            <div class="di" id="cdb" onclick="toggleDp('cdp')"><i class="fa-regular fa-calendar"></i><span id="cdd">01-01-2024 &nbsp;-&nbsp; 01-01-2025</span></div>
+            <div class="dp-pop" id="cdp">
+              <div class="dp-row"><label>จาก</label><input type="date" id="cds" value="2024-01-01"></div>
+              <div class="dp-row"><label>ถึง</label><input type="date" id="cde" value="2025-01-01"></div>
+              <button class="dp-ok" onclick="applyDp('cdp','cds','cde','cdd')">ยืนยัน</button>
+            </div>
+          </div>
+        </div>
+        <div class="fright">
+          <button class="btn btn-ol" onclick="toast('Preview mode ยังไม่พร้อม','inf')"><i class="fa-regular fa-eye"></i> Preview</button>
+        </div>
+      </div>
+      <div style="flex:1;overflow-y:auto;padding:0 16px 16px;background:#f0f2f7">
+        <div class="thead"><div class="th1">Page / Section</div><div class="th2">Translations</div><div class="th3">Visibility</div><div class="th4">Date update</div><div class="th5">Actions</div></div>
+        <div class="tbody" id="c-body"></div>
+      </div>
+    </div>
+    <div class="view" id="tc-banner"><div class="empty"><i class="fa-solid fa-rectangle-ad"></i><p>Banner Management — ยังไม่มีข้อมูล</p></div></div>
+
+    <!-- Layout Editor (nested inside content view) -->
+    <div class="view" id="v-editor" style="flex:1">
+      <div class="ed-top">
+        <div class="ed-back" onclick="backFromEditor()"><i class="fa-solid fa-arrow-left"></i> กลับ</div>
+        <div class="ed-ptitle" id="ed-title">Home page</div>
+        <div class="th-badge"><i class="fa-solid fa-palette" style="font-size:11px;color:var(--tl)"></i> Theme : Primary</div>
+      </div>
+      <div class="ed-body">
+        <!-- LEFT -->
+        <div class="el">
+          <div class="bgrid" id="block-palette">
+            <div class="bi" draggable="true" ondragstart="bdStart(event,'Hero')"><i class="fa-regular fa-rectangle-wide"></i><span>Hero</span></div>
+            <div class="bi" draggable="true" ondragstart="bdStart(event,'Rich Text')"><i class="fa-solid fa-t"></i><span>Rich Text</span></div>
+            <div class="bi" draggable="true" ondragstart="bdStart(event,'Image')"><i class="fa-regular fa-image"></i><span>Image</span></div>
+            <div class="bi" draggable="true" ondragstart="bdStart(event,'Group card')"><i class="fa-solid fa-table-cells-large"></i><span>Group card</span></div>
+            <div class="bi" draggable="true" ondragstart="bdStart(event,'CTA Banner')"><i class="fa-regular fa-circle-dot"></i><span>CTA Banner</span></div>
+            <div class="bi" draggable="true" ondragstart="bdStart(event,'Feature')"><i class="fa-solid fa-star"></i><span>Feature</span></div>
+            <div class="bi" draggable="true" ondragstart="bdStart(event,'FAQ')"><i class="fa-regular fa-circle-question"></i><span>FAQ</span></div>
+            <div class="bi" draggable="true" ondragstart="bdStart(event,'Stats')"><i class="fa-solid fa-chart-bar"></i><span>Stats</span></div>
+            <div class="bi" draggable="true" ondragstart="bdStart(event,'Gallery')"><i class="fa-regular fa-images"></i><span>Gallery</span></div>
+            <div class="bi" draggable="true" ondragstart="bdStart(event,'Divider')"><i class="fa-solid fa-minus"></i><span>Divider</span></div>
+          </div>
+          <div class="layers-sec">
+            <div class="layers-hd">Layers <span class="layers-cnt" id="lcnt">0 Item</span></div>
+            <div class="layers-list" id="llist"></div>
+          </div>
+        </div>
+        <!-- CANVAS -->
+        <div class="ec" id="ecanvas" ondragover="cdOver(event)" ondrop="cdDrop(event)" ondragleave="cdLeave(event)">
+          <div class="ci" id="cinner">
+            <div class="cnav">
+              <div class="cnav-logo">CTW</div>
+              <div class="cnav-links"><span>Home page</span><span>About us</span><span>Our Services ▾</span><span>News</span><span>Contact Us</span></div>
+              <div class="cnav-acts"><span class="cnav-btn">🇬🇧 EN ▾</span><span class="cnav-btn">Register</span><span class="cnav-btn" style="background:var(--pr);color:#fff;border:none">Login</span></div>
+            </div>
+            <div id="csections"></div>
+            <div class="add-sec-row">
+              <div class="add-sec-btn" onclick="openBlockPicker()"><i class="fa-solid fa-circle-plus"></i> Section</div>
+            </div>
+          </div>
+        </div>
+        <!-- RIGHT -->
+        <div class="er">
+          <div class="ep-hd">Edit Content</div>
+          <div class="ep-body" id="ep-body">
+            <div class="empty" style="padding:40px 0"><i class="fa-regular fa-hand-pointer"></i><p style="font-size:12px">คลิก Section เพื่อแก้ไข</p></div>
+          </div>
+          <div class="ep-save" id="ep-save" style="display:none">
+            <button class="disc-btn" onclick="discardSec()">ยกเลิก</button>
+            <button class="save-btn" onclick="saveSec()">บันทึก</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /v-content -->
+
+  <!-- ── EMPTY VIEWS ── -->
+  <div class="view" id="v-poste">
+    <div class="bc-bar"><div class="bc-tab on">Poste</div></div>
+    <div class="empty"><i class="fa-solid fa-newspaper"></i><p>Poste — ยังไม่มีข้อมูล</p></div>
+  </div>
+  <div class="view" id="v-media">
+    <div class="bc-bar"><div class="bc-tab on">Media Library</div></div>
+    <div class="empty"><i class="fa-solid fa-photo-film"></i><p>Media Library — ยังไม่มีข้อมูล</p></div>
+  </div>
+</div><!-- /main -->
+</div><!-- /app -->
+
+<!-- CREATE/EDIT MODAL -->
+<div class="ov" id="ov-create">
+  <div class="modal">
+    <div class="mhd"><span id="m-title">Create Page</span><div class="mx" onclick="closeOv('ov-create')"><i class="fa-solid fa-xmark"></i></div></div>
+    <div class="mbody">
+      <input type="hidden" id="m-eid"><input type="hidden" id="m-src">
+      <div class="fg"><label>Page Name <span>*</span></label><input class="fc" id="m-name" placeholder="e.g. Home page"></div>
+      <div class="fg"><label>Slug <span>*</span></label><input class="fc" id="m-slug" placeholder="e.g. /home"></div>
+      <div class="fg"><label>Theme</label>
+        <select class="fc fcs" id="m-theme"><option value="Primary">Primary</option><option value="Secondary">Secondary</option><option value="Minimal">Minimal</option></select>
+      </div>
+      <div class="fg"><label>Parent Page</label><select class="fc fcs" id="m-parent"><option value="">— ไม่มี (top-level) —</option></select></div>
+      <div class="fg"><label>Status</label>
+        <select class="fc fcs" id="m-status"><option value="Publish">Publish</option><option value="Draft" selected>Draft</option></select>
+      </div>
+      <div class="fg"><label>Translations</label>
+        <div class="lchks">
+          <label class="lchk"><input type="checkbox" id="ck-TH" checked> TH</label>
+          <label class="lchk"><input type="checkbox" id="ck-EN"> EN</label>
+          <label class="lchk"><input type="checkbox" id="ck-CN"> CN</label>
+        </div>
+      </div>
+    </div>
+    <div class="mft"><button class="btn-cancel" onclick="closeOv('ov-create')">ยกเลิก</button><button class="btn-save" onclick="savePage()">บันทึก</button></div>
+  </div>
+</div>
+
+<!-- DELETE MODAL -->
+<div class="ov" id="ov-del">
+  <div class="modal sm">
+    <div class="mbody" style="padding:28px 22px 18px">
+      <div class="ci-ico"><i class="fa-solid fa-trash"></i></div>
+      <div class="ci-t">ลบหน้านี้?</div>
+      <div class="ci-d" id="del-desc">คุณต้องการลบหน้านี้ใช่ไหม?</div>
+    </div>
+    <div class="mft"><button class="btn-cancel" onclick="closeOv('ov-del')">ยกเลิก</button><button class="btn-del" onclick="confirmDel()">ลบ</button></div>
+  </div>
+</div>
+
+<!-- BLOCK PICKER MODAL -->
+<div class="ov" id="ov-bp">
+  <div class="modal md">
+    <div class="mhd"><span>เลือก Block</span><div class="mx" onclick="closeOv('ov-bp')"><i class="fa-solid fa-xmark"></i></div></div>
+    <div class="mbody">
+      <div class="bp-grid">
+        <div class="bp-item" onclick="addSecModal('Hero')"><i class="fa-regular fa-rectangle-wide"></i><span>Hero</span></div>
+        <div class="bp-item" onclick="addSecModal('Rich Text')"><i class="fa-solid fa-t"></i><span>Rich Text</span></div>
+        <div class="bp-item" onclick="addSecModal('Image')"><i class="fa-regular fa-image"></i><span>Image</span></div>
+        <div class="bp-item" onclick="addSecModal('Group card')"><i class="fa-solid fa-table-cells-large"></i><span>Group card</span></div>
+        <div class="bp-item" onclick="addSecModal('CTA Banner')"><i class="fa-regular fa-circle-dot"></i><span>CTA Banner</span></div>
+        <div class="bp-item" onclick="addSecModal('Feature')"><i class="fa-solid fa-star"></i><span>Feature</span></div>
+        <div class="bp-item" onclick="addSecModal('FAQ')"><i class="fa-regular fa-circle-question"></i><span>FAQ</span></div>
+        <div class="bp-item" onclick="addSecModal('Stats')"><i class="fa-solid fa-chart-bar"></i><span>Stats</span></div>
+        <div class="bp-item" onclick="addSecModal('Gallery')"><i class="fa-regular fa-images"></i><span>Gallery</span></div>
+        <div class="bp-item" onclick="addSecModal('Divider')"><i class="fa-solid fa-minus"></i><span>Divider</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* DATA:START -- persisted state; overwritten in place by POST /api/save, do not hand-edit the shape */
+let mPages = [{"id":1,"name":"Home page","slug":"/page","theme":"Primary","status":"Publish","langs":["TH","EN","CN"],"date":"2025-06-04","time":"12:00:00","parent":null,"exp":false},{"id":2,"name":"About Us","slug":"/about-us","theme":"Primary","status":"Publish","langs":["TH","EN","CN"],"date":"2025-06-04","time":"12:00:00","parent":null,"exp":false},{"id":3,"name":"Our Services","slug":"/ourservices","theme":"Primary","status":"Draft","langs":["TH"],"date":"2025-06-04","time":"12:00:00","parent":null,"exp":true},{"id":4,"name":"EK บริการขนส่งทางรถ","slug":"/ourservices/ek","theme":"Primary","status":"Draft","langs":["TH"],"date":"2025-06-04","time":"12:00:00","parent":3,"exp":false},{"id":5,"name":"SEA บริการขนส่งทางเรือ","slug":"/ourservices/sea","theme":"Primary","status":"Draft","langs":["TH"],"date":"2025-06-04","time":"12:00:00","parent":3,"exp":false},{"id":6,"name":"ขนส่งสินค้าในนามลูกค้า","slug":"/ourservices/bynamecustomer","theme":"Primary","status":"Draft","langs":["TH"],"date":"2025-06-04","time":"12:00:00","parent":3,"exp":false}];
+let cPages = [{"id":10,"name":"Home page","slug":"/page","theme":"Primary","status":"Publish","langs":["TH","EN","CN"],"date":"2025-06-04","time":"12:00:00","parent":null,"exp":false,"sections":[{"id":1,"type":"Hero","data":{"imgTitle":"","imgDesc":"","itemCount":5,"title":"","desc":"","items":3}}]}];
+let mNextId=7,cNextId=11,edNextId=2;
+let acts=[{"text":"ระบบเริ่มต้นทำงาน","time":"2025-06-04 10:00"}];
+/* DATA:END */
+let pDel=null,pDelSrc=null;
+let dragSrcId=null,dragSrcSrc=null;
+
+/* Editor state (transient — reloaded from the selected page's `sections` each time the editor opens) */
+let edSecs=[];
+let selSecId=null,curEdPage=null,bdType=null;
+
+/* ── PERSIST ── */
+let saveTimer=null;
+function persist(){
+  const st=document.getElementById('save-status');
+  if(st){st.textContent='กำลังบันทึก...';st.classList.add('show');}
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(()=>{
+    fetch('/api/save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mPages,cPages,mNextId,cNextId,edNextId,acts})})
+      .then(r=>r.json())
+      .then(d=>{
+        if(!st)return;
+        if(d.ok){st.textContent='บันทึกแล้ว';setTimeout(()=>st.classList.remove('show'),1500);}
+        else{st.textContent='บันทึกไม่สำเร็จ';}
+      })
+      .catch(()=>{if(st)st.textContent='ออฟไลน์ — บันทึกไม่สำเร็จ (รันผ่าน node server.js หรือยัง?)';});
+  },400);
+}
+function syncEdSecs(){
+  const p=cPages.find(x=>x.id===curEdPage);
+  if(p)p.sections=JSON.parse(JSON.stringify(edSecs));
+}
+
+/* ── VIEWS ── */
+function goView(k){
+  document.querySelectorAll('.view[id^="v-"]').forEach(v=>v.classList.remove('on'));
+  const el=document.getElementById('v-'+k);
+  if(el) el.classList.add('on');
+  if(k==='menu'){renderTable(mPages,'m-body','menu',true);renderActList();}
+  if(k==='content'){renderTable(cPages,'c-body','content',false);}
+}
+
+/* ── RENDER TABLE ── */
+function renderTable(pages,bodyId,src,accent){
+  const body=document.getElementById(bodyId);
+  body.innerHTML='';
+  pages.filter(p=>!p.parent).forEach(page=>{
+    body.appendChild(buildRow(page,src,accent));
+    const kids=pages.filter(p=>p.parent===page.id);
+    if(kids.length){
+      const wrap=document.createElement('div');
+      wrap.className='srw';wrap.id='sub-'+src+'-'+page.id;
+      wrap.style.display=page.exp?'flex':'none';
+      const conn=document.createElement('div');
+      conn.className='scon';conn.innerHTML='<div class="sline"></div>';
+      const list=document.createElement('div');
+      list.className='slist';
+      kids.forEach(k=>list.appendChild(buildRow(k,src,accent)));
+      wrap.appendChild(conn);wrap.appendChild(list);body.appendChild(wrap);
+    }
+  });
+}
+function buildRow(page,src,accent){
+  const row=document.createElement('div');
+  row.className='pr'+(accent?'':' no-acc');
+  row.dataset.id=page.id;row.dataset.src=src;row.draggable=true;
+  const pages=src==='menu'?mPages:cPages;
+  const hasKids=pages.filter(p=>p.parent===page.id).length>0;
+  const sc=page.status==='Publish'?'pub':'dft';
+  const lbs=['TH','EN','CN'].map(l=>`<div class="lb ${page.langs.includes(l)?'done':'pend'}">${l}</div>`).join('');
+  const xbtn=hasKids?`<button class="xb" onclick="toggleExp('${src}',${page.id},event)"><i class="fa-solid fa-caret-${page.exp?'down':'right'}"></i></button>`:'';
+  const editFn=src==='content'?`openEditor(${page.id})`:`openEdit(${page.id},'menu')`;
+  const addBtn=src==='menu'?`<div class="ab" onclick="openCreate(${page.id},'menu')" title="เพิ่ม sub-page"><i class="fa-solid fa-circle-plus"></i></div>`:'';
+  const themeTag=src==='content'?`<span class="thtag">Theme : ${page.theme||'Primary'}</span>`:'';
+  row.innerHTML=`
+    ${accent?'<div class="acc"></div>':''}
+    <div class="dh"><i class="fa-solid fa-grip-vertical"></i></div>
+    <div class="cg">
+      <div class="cn">
+        <div class="cnr">${xbtn}<span class="pt">${page.name}</span></div>
+        <div class="sr"><span class="slug">${page.slug}</span>${themeTag}</div>
+      </div>
+      <div class="ct"><div class="lbs">${lbs}</div></div>
+      <div class="cv"><div class="sb" onclick="toggleStat('${src}',${page.id})"><div class="sd ${sc}"></div><span>${page.status}</span></div></div>
+      <div class="cd">
+        <div class="dr"><i class="fa-regular fa-calendar"></i>${page.date}</div>
+        <div class="dr"><i class="fa-regular fa-clock"></i>${page.time}</div>
+      </div>
+      <div class="ca">
+        <div class="ab" onclick="${editFn}" title="แก้ไข"><i class="fa-solid fa-pen"></i></div>
+        ${addBtn}
+        <div class="ab del" onclick="openDel(${page.id},'${src}')" title="ลบ"><i class="fa-solid fa-trash"></i></div>
+      </div>
+    </div>`;
+  row.addEventListener('dragstart',e=>{dragSrcId=page.id;dragSrcSrc=src;row.classList.add('dragging');e.dataTransfer.effectAllowed='move';});
+  row.addEventListener('dragend',()=>{row.classList.remove('dragging');document.querySelectorAll('.drag-over').forEach(el=>el.classList.remove('drag-over'));});
+  row.addEventListener('dragover',e=>{e.preventDefault();if(dragSrcId!==page.id)row.classList.add('drag-over');});
+  row.addEventListener('dragleave',()=>row.classList.remove('drag-over'));
+  row.addEventListener('drop',e=>{
+    e.preventDefault();row.classList.remove('drag-over');
+    if(dragSrcId!==null&&dragSrcId!==page.id&&dragSrcSrc===src){
+      const arr=src==='menu'?mPages:cPages;
+      const from=arr.find(p=>p.id===dragSrcId),to=arr.find(p=>p.id===page.id);
+      if(from&&to&&from.parent===to.parent){
+        const fi=arr.indexOf(from),ti=arr.indexOf(to);
+        arr.splice(fi,1);arr.splice(ti,0,from);
+        src==='menu'?renderTable(mPages,'m-body','menu',true):renderTable(cPages,'c-body','content',false);
+        toast(`ย้าย "${from.name}" เรียบร้อย`);
+        persist();
+      }
+    }
+    dragSrcId=null;
+  });
+  return row;
+}
+
+/* ── ROW ACTIONS ── */
+function toggleExp(src,id,e){
+  e.stopPropagation();
+  const arr=src==='menu'?mPages:cPages;
+  const page=arr.find(p=>p.id===id);if(!page)return;
+  page.exp=!page.exp;
+  const wrap=document.getElementById('sub-'+src+'-'+id);
+  if(wrap)wrap.style.display=page.exp?'flex':'none';
+  const btn=document.querySelector('.pr[data-id="'+id+'"][data-src="'+src+'"] .xb');
+  if(btn)btn.querySelector('i').className='fa-solid fa-caret-'+(page.exp?'down':'right');
+}
+function toggleStat(src,id){
+  const arr=src==='menu'?mPages:cPages;
+  const page=arr.find(p=>p.id===id);if(!page)return;
+  const old=page.status;page.status=old==='Publish'?'Draft':'Publish';
+  src==='menu'?renderTable(mPages,'m-body','menu',true):renderTable(cPages,'c-body','content',false);
+  addAct(`เปลี่ยนสถานะ "${page.name}": ${old} → ${page.status}`);
+  toast(`"${page.name}" → ${page.status}`);
+  persist();
+}
+
+/* ── CREATE/EDIT ── */
+function openCreate(parentId,src){
+  document.getElementById('m-title').textContent='Create Page';
+  document.getElementById('m-eid').value='';
+  document.getElementById('m-src').value=src;
+  document.getElementById('m-name').value='';
+  document.getElementById('m-slug').value='';
+  document.getElementById('m-theme').value='Primary';
+  document.getElementById('m-status').value='Draft';
+  document.getElementById('ck-TH').checked=true;
+  document.getElementById('ck-EN').checked=false;
+  document.getElementById('ck-CN').checked=false;
+  fillParent(src,null);
+  if(parentId)document.getElementById('m-parent').value=parentId;
+  openOv('ov-create');
+}
+function openEdit(id,src){
+  const arr=src==='menu'?mPages:cPages;
+  const p=arr.find(x=>x.id===id);if(!p)return;
+  document.getElementById('m-title').textContent='แก้ไขหน้า';
+  document.getElementById('m-eid').value=id;
+  document.getElementById('m-src').value=src;
+  document.getElementById('m-name').value=p.name;
+  document.getElementById('m-slug').value=p.slug;
+  document.getElementById('m-theme').value=p.theme||'Primary';
+  document.getElementById('m-status').value=p.status;
+  document.getElementById('ck-TH').checked=p.langs.includes('TH');
+  document.getElementById('ck-EN').checked=p.langs.includes('EN');
+  document.getElementById('ck-CN').checked=p.langs.includes('CN');
+  fillParent(src,id);
+  document.getElementById('m-parent').value=p.parent||'';
+  openOv('ov-create');
+}
+function fillParent(src,excId){
+  const arr=src==='menu'?mPages:cPages;
+  const sel=document.getElementById('m-parent');
+  sel.innerHTML='<option value="">— ไม่มี (top-level) —</option>';
+  arr.filter(p=>!p.parent&&p.id!==excId).forEach(p=>{
+    const o=document.createElement('option');o.value=p.id;o.textContent=p.name;sel.appendChild(o);
+  });
+}
+function savePage(){
+  const name=document.getElementById('m-name').value.trim();
+  const slug=document.getElementById('m-slug').value.trim();
+  if(!name||!slug){toast('กรุณากรอก Page Name และ Slug','err');return;}
+  const src=document.getElementById('m-src').value;
+  const arr=src==='menu'?mPages:cPages;
+  const status=document.getElementById('m-status').value;
+  const theme=document.getElementById('m-theme').value;
+  const parent=document.getElementById('m-parent').value?parseInt(document.getElementById('m-parent').value):null;
+  const langs=['TH','EN','CN'].filter(l=>document.getElementById('ck-'+l).checked);
+  const eid=document.getElementById('m-eid').value;
+  const now=new Date();
+  const ds=now.toISOString().split('T')[0],ts=now.toTimeString().slice(0,8);
+  if(eid){
+    const p=arr.find(x=>x.id===parseInt(eid));
+    if(p)Object.assign(p,{name,slug,theme,status,parent,langs,date:ds,time:ts});
+    addAct(`แก้ไขหน้า "${name}"`);toast(`แก้ไข "${name}" เรียบร้อย`);
+  } else {
+    const nid=src==='menu'?mNextId++:cNextId++;
+    const rec={id:nid,name,slug,theme,status,langs,date:ds,time:ts,parent,exp:false};
+    if(src==='content')rec.sections=[];
+    arr.push(rec);
+    if(parent){const pp=arr.find(x=>x.id===parent);if(pp)pp.exp=true;}
+    addAct(`สร้างหน้า "${name}"`);toast(`สร้าง "${name}" เรียบร้อย`);
+  }
+  closeOv('ov-create');
+  src==='menu'?renderTable(mPages,'m-body','menu',true):renderTable(cPages,'c-body','content',false);
+  persist();
+}
+
+/* ── DELETE ── */
+function openDel(id,src){
+  pDel=id;pDelSrc=src;
+  const arr=src==='menu'?mPages:cPages;
+  const p=arr.find(x=>x.id===id);
+  document.getElementById('del-desc').textContent=`คุณต้องการลบหน้า "${p?.name}" ใช่ไหม? การกระทำนี้ไม่สามารถย้อนกลับได้`;
+  openOv('ov-del');
+}
+function confirmDel(){
+  if(pDel===null)return;
+  const arr=pDelSrc==='menu'?mPages:cPages;
+  const p=arr.find(x=>x.id===pDel);
+  const name=p?.name;
+  if(pDelSrc==='menu'){
+    const keep=mPages.filter(x=>x.id!==pDel&&x.parent!==pDel);
+    mPages.length=0;keep.forEach(x=>mPages.push(x));
+  } else {
+    const idx=cPages.indexOf(p);if(idx>-1)cPages.splice(idx,1);
+  }
+  addAct(`ลบหน้า "${name}"`);toast(`ลบ "${name}" เรียบร้อย`,'err');
+  pDel=null;closeOv('ov-del');
+  pDelSrc==='menu'?renderTable(mPages,'m-body','menu',true):renderTable(cPages,'c-body','content',false);
+  persist();
+}
+
+/* ── EDITOR ── */
+function openEditor(pageId){
+  curEdPage=pageId;
+  const p=cPages.find(x=>x.id===pageId);if(!p)return;
+  if(!p.sections)p.sections=[];
+  edSecs=JSON.parse(JSON.stringify(p.sections));
+  edNextId=Math.max(edNextId,...edSecs.map(s=>s.id+1),1);
+  document.getElementById('ed-title').textContent=p.name;
+  document.getElementById('bc-ed-lbl').textContent=p.name;
+  // Update breadcrumb
+  document.querySelectorAll('#content-bc .bc-tab').forEach(t=>t.classList.remove('on'));
+  const bcEd=document.getElementById('bc-editor');
+  bcEd.style.display='flex';bcEd.classList.add('on');
+  // Hide content list panels, show editor panel
+  document.getElementById('tc-pages').classList.remove('on');
+  document.getElementById('content-ctabs-bar').style.display='none';
+  document.getElementById('v-editor').classList.add('on');
+  selSecId=null;renderEdSecs();renderLayers();renderRightPanel();
+}
+function backFromEditor(){
+  document.getElementById('v-editor').classList.remove('on');
+  document.getElementById('tc-pages').classList.add('on');
+  document.getElementById('content-ctabs-bar').style.display='';
+  document.getElementById('bc-editor').style.display='none';
+  document.querySelectorAll('#content-bc .bc-tab').forEach((t,i)=>{t.classList.remove('on');if(i===1)t.classList.add('on');});
+  selSecId=null;
+}
+function closeEditor(e){e&&e.stopPropagation();backFromEditor();}
+
+/* BLOCK DRAG */
+function bdStart(e,type){bdType=type;e.dataTransfer.effectAllowed='copy';}
+function cdOver(e){e.preventDefault();e.dataTransfer.dropEffect='copy';document.getElementById('ecanvas').style.background='#d8dbe8';}
+function cdLeave(e){if(!document.getElementById('ecanvas').contains(e.relatedTarget))document.getElementById('ecanvas').style.background='#e8eaf0';}
+function cdDrop(e){
+  e.preventDefault();document.getElementById('ecanvas').style.background='#e8eaf0';
+  if(bdType){addSec(bdType);bdType=null;}
+}
+function openBlockPicker(){openOv('ov-bp');}
+function addSecModal(type){closeOv('ov-bp');addSec(type);}
+function addSec(type){
+  const sec={id:edNextId++,type,data:{imgTitle:'',imgDesc:'',itemCount:5,title:'',desc:'',items:3}};
+  edSecs.push(sec);renderEdSecs();renderLayers();selectSec(sec.id);toast(`เพิ่ม "${type}" เรียบร้อย`);
+  syncEdSecs();persist();
+}
+function renderEdSecs(){
+  const c=document.getElementById('csections');c.innerHTML='';
+  edSecs.forEach(sec=>{
+    const wrap=document.createElement('div');
+    wrap.className='cs'+(selSecId===sec.id?' sel':'');
+    wrap.innerHTML=`
+      <div class="cs-lbl">${sec.type}</div>
+      <div class="cs-del" onclick="delSec(${sec.id},event)"><i class="fa-solid fa-xmark"></i></div>
+      <div class="cs-ov" onclick="selectSec(${sec.id})"></div>
+      ${buildSecPrev(sec)}`;
+    c.appendChild(wrap);
+  });
+}
+function buildSecPrev(sec){
+  switch(sec.type){
+    case 'Hero':return`<div class="hero-blk"><div class="hero-ph"><i class="fa-regular fa-image"></i><span>${sec.data.imgTitle||'Hero / Banner'}</span></div><div class="hero-dots">${Array(sec.data.itemCount||5).fill(0).map((_,i)=>`<div class="hdot${i===0?' a':''}"></div>`).join('')}</div></div>`;
+    case 'Rich Text':return`<div class="rt-blk"><div class="rt-t">${sec.data.title||'Section Title'}</div><div class="rt-b">${sec.data.desc||'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ut enim.'}</div></div>`;
+    case 'Image':return`<div class="img-blk"><i class="fa-regular fa-image"></i></div>`;
+    case 'Group card':case 'Feature':return`<div class="cards-blk">${[1,2,3].map(i=>`<div class="card-it"><div class="card-ico"><i class="fa-solid fa-star"></i></div><div class="card-t">Card ${i}</div><div class="card-d">Short description</div></div>`).join('')}</div>`;
+    case 'CTA Banner':return`<div class="cta-blk"><div class="cta-h">${sec.data.title||'Ready to get started?'}</div><div class="cta-p">${sec.data.desc||'Join thousands of satisfied customers today.'}</div><div class="cta-btn">Get Started</div></div>`;
+    case 'FAQ':return`<div class="faq-blk">${['คำถามที่ 1 คืออะไร?','คำถามที่ 2 คืออะไร?','คำถามที่ 3 คืออะไร?'].map((q,i)=>`<div class="faq-it"><div class="faq-q">${q}<i class="fa-solid fa-chevron-down" style="font-size:10px;color:var(--tl)"></i></div>${i===0?'<div class="faq-a">คำตอบสำหรับคำถามนี้จะแสดงที่นี่</div>':''}</div>`).join('')}</div>`;
+    case 'Stats':return`<div class="stats-blk">${[['10K+','Customers'],['50+','Countries'],['99%','Uptime'],['24/7','Support']].map(([n,l])=>`<div><div class="st-n">${n}</div><div class="st-l">${l}</div></div>`).join('')}</div>`;
+    case 'Gallery':return`<div class="gal-blk">${Array(6).fill(0).map(()=>`<div class="g-th"><i class="fa-regular fa-image"></i></div>`).join('')}</div>`;
+    case 'Divider':return`<div class="div-blk"><div class="div-line"></div></div>`;
+    default:return`<div style="padding:20px;text-align:center;color:var(--tl);font-size:13px">${sec.type}</div>`;
+  }
+}
+function selectSec(id){
+  selSecId=id;renderEdSecs();renderRightPanel();
+  document.querySelectorAll('.li').forEach(el=>el.classList.toggle('sel',parseInt(el.dataset.id)===id));
+}
+function delSec(id,e){
+  e&&e.stopPropagation();
+  const sec=edSecs.find(s=>s.id===id);
+  edSecs=edSecs.filter(s=>s.id!==id);
+  if(selSecId===id){selSecId=null;renderRightPanel();}
+  renderEdSecs();renderLayers();toast(`ลบ "${sec?.type}" เรียบร้อย`,'err');
+  syncEdSecs();persist();
+}
+function renderLayers(){
+  const list=document.getElementById('llist');
+  document.getElementById('lcnt').textContent=edSecs.length+' Item'+(edSecs.length!==1?'s':'');
+  list.innerHTML=edSecs.map(sec=>`
+    <div class="li ${selSecId===sec.id?'sel':''}" data-id="${sec.id}" onclick="selectSec(${sec.id})">
+      <div class="li-dh"><i class="fa-solid fa-grip-vertical"></i></div>
+      <div class="li-col"></div>
+      <div class="li-info"><div class="li-nm">${sec.type}</div><div class="li-tp">${sec.type==='Hero'?'Hero/Banner':sec.type}</div></div>
+      <div class="li-del" onclick="delSec(${sec.id},event)"><i class="fa-solid fa-xmark"></i></div>
+    </div>`).join('');
+}
+function renderRightPanel(){
+  const body=document.getElementById('ep-body');
+  const save=document.getElementById('ep-save');
+  const sec=edSecs.find(s=>s.id===selSecId);
+  if(!sec){
+    body.innerHTML='<div class="empty" style="padding:40px 0"><i class="fa-regular fa-hand-pointer"></i><p style="font-size:12px">คลิก Section เพื่อแก้ไข</p></div>';
+    save.style.display='none';return;
+  }
+  body.innerHTML=buildEP(sec);save.style.display='flex';
+}
+function buildEP(sec){
+  switch(sec.type){
+    case 'Hero':return`
+      <div class="eg"><div class="eg-lbl">Image Title</div><input class="ei" id="ep-it" placeholder="Ex. banner" value="${sec.data.imgTitle||''}"></div>
+      <div class="eg"><div class="eg-lbl">Image description</div><div class="cc" id="ep-cc">${(sec.data.imgDesc||'').length}/200 character</div><textarea class="eta" id="ep-id" maxlength="200" placeholder="Enter Description" oninput="document.getElementById('ep-cc').textContent=this.value.length+'/200 character'">${sec.data.imgDesc||''}</textarea></div>
+      <div class="eg"><div class="eg-lbl">Banner item</div><div class="eg-sub">Maximum 8 Item</div><select class="esel" id="ep-ic">${Array.from({length:8},(_,i)=>`<option value="${i+1}" ${sec.data.itemCount==i+1?'selected':''}>${i+1}</option>`).join('')}</select></div>`;
+    case 'Rich Text':return`
+      <div class="eg"><div class="eg-lbl">Title</div><input class="ei" id="ep-t" placeholder="Section Title" value="${sec.data.title||''}"></div>
+      <div class="eg"><div class="eg-lbl">Body Text</div><textarea class="eta" id="ep-d" style="min-height:120px" placeholder="Enter content...">${sec.data.desc||''}</textarea></div>`;
+    case 'Image':return`
+      <div class="eg"><div class="eg-lbl">Upload Image</div><div class="up-box" onclick="toast('เปิด Media Library...','inf')"><i class="fa-solid fa-cloud-arrow-up"></i><span>คลิกเพื่ออัปโหลด</span></div></div>
+      <div class="eg"><div class="eg-lbl">Alt Text</div><input class="ei" id="ep-t" placeholder="Image alt text" value="${sec.data.title||''}"></div>`;
+    case 'Group card':case 'Feature':return`
+      <div class="eg"><div class="eg-lbl">Section Title</div><input class="ei" id="ep-t" placeholder="Section Title" value="${sec.data.title||''}"></div>
+      <div class="eg"><div class="eg-lbl">จำนวน Card</div><select class="esel" id="ep-ic">${[2,3,4].map(n=>`<option value="${n}" ${sec.data.items==n?'selected':''}>${n} items</option>`).join('')}</select></div>`;
+    case 'CTA Banner':return`
+      <div class="eg"><div class="eg-lbl">Headline</div><input class="ei" id="ep-t" placeholder="Ready to get started?" value="${sec.data.title||''}"></div>
+      <div class="eg"><div class="eg-lbl">Description</div><textarea class="eta" id="ep-d" placeholder="Enter description...">${sec.data.desc||''}</textarea></div>
+      <div class="eg"><div class="eg-lbl">Button Text</div><input class="ei" placeholder="Get Started"></div>`;
+    case 'FAQ':return`
+      <div class="eg"><div class="eg-lbl">Section Title</div><input class="ei" id="ep-t" placeholder="FAQ Title" value="${sec.data.title||''}"></div>
+      <div class="eg"><div class="eg-lbl">จำนวน FAQ สูงสุด</div><select class="esel" id="ep-ic">${[3,5,8,10].map(n=>`<option ${sec.data.items==n?'selected':''}>${n}</option>`).join('')}</select></div>`;
+    case 'Stats':return`
+      <div class="eg"><div class="eg-lbl">Background Style</div><select class="esel"><option>Light</option><option>Dark</option></select></div>
+      <div class="eg"><div class="eg-lbl">จำนวน Stat</div><select class="esel" id="ep-ic">${[2,3,4].map(n=>`<option ${sec.data.items==n?'selected':''}>${n}</option>`).join('')}</select></div>`;
+    case 'Gallery':return`
+      <div class="eg"><div class="eg-lbl">จำนวนภาพ</div><select class="esel" id="ep-ic">${[3,4,6,8,9].map(n=>`<option ${sec.data.items==n?'selected':''}>${n}</option>`).join('')}</select></div>
+      <div class="eg"><div class="eg-lbl">Columns</div><select class="esel">${[2,3,4].map(n=>`<option>${n}</option>`).join('')}</select></div>`;
+    case 'Divider':return`
+      <div class="eg"><div class="eg-lbl">Style</div><select class="esel"><option>Solid</option><option>Dashed</option><option>Dotted</option></select></div>
+      <div class="eg"><div class="eg-lbl">Spacing</div><select class="esel"><option>Small</option><option selected>Medium</option><option>Large</option></select></div>`;
+    default:return`<div class="eg"><div class="eg-lbl" style="color:var(--tp)">ไม่มี properties</div></div>`;
+  }
+}
+function saveSec(){
+  const sec=edSecs.find(s=>s.id===selSecId);if(!sec)return;
+  if(document.getElementById('ep-it'))sec.data.imgTitle=document.getElementById('ep-it').value;
+  if(document.getElementById('ep-id'))sec.data.imgDesc=document.getElementById('ep-id').value;
+  if(document.getElementById('ep-ic'))sec.data.itemCount=parseInt(document.getElementById('ep-ic').value)||sec.data.itemCount;
+  if(document.getElementById('ep-t'))sec.data.title=document.getElementById('ep-t').value;
+  if(document.getElementById('ep-d'))sec.data.desc=document.getElementById('ep-d').value;
+  renderEdSecs();toast(`บันทึก "${sec.type}" เรียบร้อย`);
+  syncEdSecs();persist();
+}
+function discardSec(){selSecId=null;renderEdSecs();renderRightPanel();renderLayers();}
+
+/* ── SIDEBAR / TABS / BC ── */
+function toggleSb(){document.getElementById('sb').classList.toggle('col');}
+function setNav(el){document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active','open'));el.classList.add('active');}
+function toggleSub(el,id){el.classList.toggle('open');document.getElementById(id).classList.toggle('open');}
+function setSubAct(el){
+  document.querySelectorAll('.sub-item').forEach(n=>n.classList.remove('active'));el.classList.add('active');
+  document.getElementById('nav-site').classList.add('active','open');document.getElementById('sub-site').classList.add('open');
+}
+function setBc(el){el.closest('.bc-bar').querySelectorAll('.bc-tab').forEach(t=>t.classList.remove('on'));el.classList.add('on');}
+function closeBc(e,id){e.stopPropagation();const t=document.getElementById(id);if(t)t.style.display='none';}
+function swTab(el,cid,tid){
+  document.querySelectorAll('#'+tid+' .ctab').forEach(t=>t.classList.remove('on'));el.classList.add('on');
+  // find sibling views
+  const parent=el.closest('.view,.app,.main');
+  const panels=document.querySelectorAll('#'+cid);// direct by ID
+  // hide all sibling panels
+  const pContainer=document.getElementById(cid).parentElement;
+  [...pContainer.children].forEach(ch=>{if(ch.classList.contains('view')&&ch.id!==cid)ch.classList.remove('on');});
+  document.getElementById(cid).classList.add('on');
+  if(cid==='tm-act')renderActList();
+}
+
+/* ── DATE PICKER ── */
+function toggleDp(id){
+  const p=document.getElementById(id);
+  document.querySelectorAll('.dp-pop.open').forEach(x=>{if(x.id!==id)x.classList.remove('open');});
+  p.classList.toggle('open');
+}
+function applyDp(pid,sid,eid,did){
+  const s=document.getElementById(sid).value,e=document.getElementById(eid).value;
+  if(s&&e){const f=d=>d.split('-').reverse().join('-');document.getElementById(did).innerHTML=`${f(s)} &nbsp;-&nbsp; ${f(e)}`;toast('กำหนดช่วงวันที่แล้ว');}
+  document.getElementById(pid).classList.remove('open');
+}
+document.addEventListener('click',e=>{
+  document.querySelectorAll('.dp-pop.open').forEach(pop=>{
+    const btn=pop.previousElementSibling;
+    if(!pop.contains(e.target)&&(!btn||!btn.contains(e.target)))pop.classList.remove('open');
+  });
+});
+
+/* ── ACTIVITY ── */
+function addAct(text){acts.unshift({text,time:new Date().toLocaleString('th-TH')});}
+function renderActList(){
+  const list=document.getElementById('m-act-list');if(!list)return;
+  list.innerHTML=acts.length?acts.map(a=>`
+    <div style="display:flex;gap:12px;padding:11px 0;border-bottom:1px solid var(--bl);align-items:flex-start">
+      <div style="width:9px;height:9px;border-radius:50%;background:var(--pr);flex-shrink:0;margin-top:4px"></div>
+      <div><div style="font-size:13.5px;color:var(--td)">${a.text}</div><div style="font-size:11.5px;color:var(--tp);margin-top:2px"><i class="fa-regular fa-clock" style="margin-right:4px"></i>${a.time}</div></div>
+    </div>`).join('')
+    :'<div class="empty"><i class="fa-solid fa-clock-rotate-left"></i><p>ยังไม่มีกิจกรรม</p></div>';
+}
+
+/* ── TOAST / MODAL ── */
+function toast(msg,type='ok'){
+  const w=document.getElementById('tw');
+  const el=document.createElement('div');el.className='t '+type;
+  const ico=type==='err'?'fa-circle-xmark':type==='inf'?'fa-circle-info':'fa-circle-check';
+  el.innerHTML=`<i class="fa-solid ${ico}"></i><span>${msg}</span>`;
+  w.appendChild(el);setTimeout(()=>el.remove(),3000);
+}
+function openOv(id){document.getElementById(id).classList.add('open');}
+function closeOv(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.ov').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
+
+/* ── INIT ── */
+renderTable(mPages,'m-body','menu',true);
+renderTable(cPages,'c-body','content',false);
+</script>
+</body>
+</html>
